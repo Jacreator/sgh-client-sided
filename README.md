@@ -1,4 +1,4 @@
-<h1 align="center">TaxITPay Payment Service</h1>
+<h1 align="center">Client Service</h1>
 
 
 Set the environment variables:
@@ -61,14 +61,7 @@ The environment variables can be found and modified in the  `.env`  file. They c
 APP_PORT=9000
 
 # Prefix app path
-APP_PREFIX_PATH=/
-
-# JWT
-# JWT Secret
-JWT_SECRET=somerandomkeyherena
-# JWT Expire
-JWT_EXPIRE=1y
-
+APP_PREFIX_PATH=/api
 
 # Database config
 
@@ -100,43 +93,6 @@ src\
 The app has a centralized error handling mechanism.
 
 Routes should try to catch the errors and forward them to the error handling middleware (by calling `next(e)`).
-
-```ts
-router.post('/login', async (req, res, next) => {
-	try {
-		const { email, password } = req.body
-		const user = await User.findOne({ email })
-		if (!user || !user.validPassword(password))
-		throw new ApiError(httpStatus.UNPROCESSABLE_ENTITY, 'Invalid email or password')
-		res.json(user.toAuthJSON())
-	} catch (e) {
-		next(e)
-	}
-})
-```
-
-The error handling middleware sends an error response, which has the following format:
-```json
-{
-  "code": 401,
-  "message": "Invalid email or password"
-}
-```
-When running in development mode, the error response also contains the error stack.
-
-## Authentication
-To require authentication for certain routes, you can use the `authenticate` from passportjs
-```ts
-router.post('/', authenticate(['jwt'], { session:  false }), async (req, res, next) => {
-	try {
-		const store = new  Store(req.body.store)
-		await store.save()
-		res.json(store)
-	} catch (e) {
-		next(e)
-	}
-})
-```
 
 ## Logging
 Import the logger from  `src/config/logger.ts`. It is using the  [Winston](https://github.com/winstonjs/winston)  logging library.
